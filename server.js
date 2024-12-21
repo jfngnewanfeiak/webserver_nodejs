@@ -31,7 +31,11 @@ const client = new Client({
 
 client.connect()
 app.get('/get-data', (req, res) => {
-  client.query("select * from parking_lots",(err,result)=>{
+  console.log("app.getです。");
+  console.log(req.query);
+  var aaaa = convertQueryStringToSQL(req.query['query']);
+  console.log(aaaa);
+  client.query(aaaa,(err,result)=>{
     if(err){
       res.status(500).send(err);
     }else{
@@ -44,3 +48,16 @@ app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
   
+function convertQueryStringToSQL(query){
+  console.log("変換する関数です。");
+  let SQL ="";
+  for(let i=0;i<query.length;i++){
+    if (query[i]=="/"){
+      SQL = SQL + " ";
+    }else{
+      SQL = SQL + query[i];
+    }
+  }
+
+  return SQL;
+}
