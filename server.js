@@ -9,8 +9,17 @@ require('dotenv').config({
   });
 
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = 30000;
+
+app.use((req,res,next)=>{
+  //全てのオリジンを許可
+  res.header("Access-Control-Allow-Origin",'*');
+  res.header("Access-Control-Allow-Methods",'GET,POST,PUT,DELETE');
+  res.header("Access-Control-Allow-Headers",'Content-Type');
+  next();
+});
 
 const client = new Client({
   user:process.env.user,
@@ -22,10 +31,13 @@ const client = new Client({
 
 client.connect()
 app.get('/get-data', (req, res) => {
-    client.query("select * from parking_lots",(err,result)=>{
-      console.log(result)
-      res.send(result['rows'])
-    })
+  client.query("select * from parking_lots",(err,result)=>{
+    if(err){
+      res.status(500).send(err);
+    }else{
+      res.json(result.rows);
+    }
+  })
 });
 
 app.listen(port, () => {
