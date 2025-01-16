@@ -44,6 +44,20 @@ app.get('/get-data', (req, res) => {
   })
 });
 
+app.get("/temi_status",(req,res) => {
+  console.log("temi_status");
+  console.log(req.query);
+  var retV = convertQueryStringToSQL(req.query['query']);
+  console.log(retV);
+  client.query(retV,(err,result)=>{
+    if(err){
+      res.status(500).send(err);
+    }else{
+      res.json(result.rows);
+    }
+  })
+})
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
